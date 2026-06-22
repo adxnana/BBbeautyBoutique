@@ -6,6 +6,10 @@ export default function Home() {
   const newArrivals = products.slice(0, 6);
   const lookbook = products.slice(0, 4);
 
+  // Pick a dynamic, striking main image for the primary hero asset
+  const heroProduct = products.find((p) => p.id === "beaumont-trench") || products[0];
+  const heroImage = heroProduct?.images?.[0];
+
   return (
     <div>
       {/* HERO — asymmetric split */}
@@ -35,8 +39,17 @@ export default function Home() {
             </Link>
           </div>
         </div>
-        <div className="lg:col-span-7 bg-bbpink img-placeholder text-3xl min-h-[60vh]">
-          Featured Lookbook Image
+        <div className="lg:col-span-7 bg-bbpink img-placeholder text-3xl min-h-[60vh] relative overflow-hidden">
+          <span className="absolute inset-0 flex items-center justify-center p-4">Featured Lookbook Image</span>
+          {heroImage && (
+            <img
+              src={heroImage}
+              alt="B&B Boutique Hero Look"
+              loading="eager"
+              className="absolute inset-0 h-full w-full object-cover"
+              onError={(e) => { e.currentTarget.style.display = "none"; }}
+            />
+          )}
         </div>
       </section>
 
@@ -71,18 +84,36 @@ export default function Home() {
           <h2 className="font-serif text-5xl mt-2">Editorial No. 04</h2>
         </div>
         <div className="grid grid-cols-12 gap-4 mt-10">
-          <div className="col-span-12 md:col-span-5 aspect-[3/4] img-placeholder text-2xl">
-            {lookbook[0].name}
-          </div>
-          <div className="col-span-12 md:col-span-4 md:col-start-7 aspect-[3/4] mt-0 md:mt-16 img-placeholder text-2xl">
-            {lookbook[1].name}
-          </div>
-          <div className="col-span-12 md:col-span-6 md:col-start-2 aspect-[4/3] img-placeholder text-2xl">
-            {lookbook[2].name}
-          </div>
-          <div className="col-span-12 md:col-span-4 md:col-start-9 aspect-[3/4] md:-mt-24 img-placeholder text-2xl">
-            {lookbook[3].name}
-          </div>
+          {lookbook.map((p, idx) => {
+            // Give each element unique structural grid weights to keep that custom lookbook shape
+            const layoutClasses = [
+              "col-span-12 md:col-span-5 aspect-[3/4]",
+              "col-span-12 md:col-span-4 md:col-start-7 aspect-[3/4] mt-0 md:mt-16",
+              "col-span-12 md:col-span-6 md:col-start-2 aspect-[4/3]",
+              "col-span-12 md:col-span-4 md:col-start-9 aspect-[3/4] md:-mt-24"
+            ];
+
+            return (
+              <Link 
+                to={`/product/${p.id}`} 
+                key={p.id} 
+                className={`${layoutClasses[idx] || "col-span-6"} img-placeholder text-2xl relative overflow-hidden block group`}
+              >
+                <span className="absolute inset-0 flex items-center justify-center text-center p-4 z-10 bg-bbespresso/0 group-hover:bg-bbespresso/10 transition-colors duration-300">
+                  {p.name}
+                </span>
+                {p.images?.[0] && (
+                  <img
+                    src={p.images[0]}
+                    alt={p.name}
+                    loading="lazy"
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-102"
+                    onError={(e) => { e.currentTarget.style.display = "none"; }}
+                  />
+                )}
+              </Link>
+            );
+          })}
         </div>
       </section>
 
@@ -91,7 +122,7 @@ export default function Home() {
         {[
           { title: "Considered Materials", body: "Natural fibers and durable blends sourced for longevity." },
           { title: "Small-Batch Production", body: "Limited runs that reduce waste and preserve fit and finish." },
-          { title: "Free Shipping Over $150", body: "Standard delivery on every U.S. order above the threshold." },
+          { title: "Free Shipping Over $150", body: "Standard delivery on every order above the threshold." },
         ].map((v, i) => (
           <div
             key={v.title}
@@ -108,9 +139,24 @@ export default function Home() {
         <h2 className="font-serif text-4xl mb-10">The Edit</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
           {products.slice(0, 8).map((p) => (
-            <div key={p.id} className="aspect-square img-placeholder text-sm">
-              {p.name}
-            </div>
+            <Link 
+              to={`/product/${p.id}`} 
+              key={p.id} 
+              className="aspect-square img-placeholder text-sm relative overflow-hidden block group"
+            >
+              <span className="absolute bottom-3 left-3 bg-bbcream text-bbespresso text-[10px] uppercase tracking-widest px-2 py-1 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                {p.name}
+              </span>
+              {p.images?.[0] && (
+                <img
+                  src={p.images[0]}
+                  alt={p.name}
+                  loading="lazy"
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  onError={(e) => { e.currentTarget.style.display = "none"; }}
+                />
+              )}
+            </Link>
           ))}
         </div>
       </section>
