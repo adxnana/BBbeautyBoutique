@@ -50,16 +50,31 @@ export default function Product() {
               <button
                 key={img}
                 onClick={() => setActiveImage(idx)}
-                className={`aspect-[3/4] w-full img-placeholder text-[10px] border ${
+                className={`relative aspect-[3/4] w-full overflow-hidden bg-bbpink border ${
                   idx === activeImage ? "border-bbespresso" : "border-transparent"
                 }`}
               >
-                {idx + 1}
+                <div className="img-placeholder absolute inset-0 text-[10px]">{idx + 1}</div>
+                <img
+                  src={img}
+                  alt={`${product.name} view ${idx + 1}`}
+                  loading="lazy"
+                  className="absolute inset-0 h-full w-full object-cover"
+                  onError={(e) => { e.currentTarget.style.display = "none"; }}
+                />
               </button>
             ))}
           </div>
-          <div className="col-span-5 aspect-[3/4] img-placeholder text-2xl order-1 lg:order-2">
-            {product.name} — View {activeImage + 1}
+          <div className="col-span-5 relative aspect-[3/4] overflow-hidden bg-bbpink order-1 lg:order-2">
+            <div className="img-placeholder absolute inset-0 text-2xl">
+              <span className="px-4 text-center">{product.name} — View {activeImage + 1}</span>
+            </div>
+            <img
+              src={product.images[activeImage]}
+              alt={`${product.name} view ${activeImage + 1}`}
+              className="absolute inset-0 h-full w-full object-cover"
+              onError={(e) => { e.currentTarget.style.display = "none"; }}
+            />
           </div>
         </div>
 
