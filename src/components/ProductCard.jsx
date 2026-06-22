@@ -2,12 +2,22 @@ import { Link } from "react-router-dom";
 
 export default function ProductCard({ product }) {
   const lowStock = product.stock > 0 && product.stock < 3;
+  const cover = product.images?.[0];
   return (
     <Link to={`/product/${product.id}`} className="group block">
       <div className="aspect-[3/4] bg-bbpink relative overflow-hidden">
         <div className="img-placeholder absolute inset-0 text-lg">
           <span className="px-4 text-center">{product.name}</span>
         </div>
+        {cover && (
+          <img
+            src={cover}
+            alt={product.name}
+            loading="lazy"
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+            onError={(e) => { e.currentTarget.style.display = "none"; }}
+          />
+        )}
         {lowStock && (
           <span className="absolute top-3 left-3 bg-bbespresso text-bbcream text-[10px] uppercase tracking-widest px-2 py-1">
             Low Stock
