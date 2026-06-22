@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root { height: 100%; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background-color: #F5EFE6;
+  color: #2B1D14;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; letter-spacing: -0.01em; }
+
+.hairline { border-color: #2B1D14; }
+
+/* Slide-in animations */
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+.animate-slide-in { animation: slideIn 0.3s ease-out; }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-fade-in { animation: fadeIn 0.2s ease-out; }
+
+/* Image placeholders */
+.img-placeholder {
+  background: repeating-linear-gradient(
+    45deg,
+    #E8B4B8,
+    #E8B4B8 12px,
+    #d9a3a7 12px,
+    #d9a3a7 24px
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2B1D14;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+}
