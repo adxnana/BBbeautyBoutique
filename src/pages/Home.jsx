@@ -39,16 +39,18 @@ export default function Home() {
             </Link>
           </div>
         </div>
-        <div className="lg:col-span-7 bg-bbpink img-placeholder text-3xl min-h-[60vh] relative overflow-hidden">
-          <span className="absolute inset-0 flex items-center justify-center p-4">Featured Lookbook Image</span>
-          {heroImage && (
+        {/* HERO IMAGE: Uses contain to show the full editorial image without cropping */}
+        <div className="lg:col-span-7 bg-bbpink/40 min-h-[60vh] flex items-center justify-center overflow-hidden p-6">
+          {heroImage ? (
             <img
               src={heroImage}
               alt="B&B Boutique Hero Look"
               loading="eager"
-              className="absolute inset-0 h-full w-full object-cover"
+              className="max-h-[75vh] w-auto max-w-full object-contain"
               onError={(e) => { e.currentTarget.style.display = "none"; }}
             />
+          ) : (
+            <span className="text-3xl text-bbespresso/40">Featured Lookbook Image</span>
           )}
         </div>
       </section>
@@ -77,40 +79,46 @@ export default function Home() {
 
       {/* LOOKBOOK — asymmetric staggered grid */}
       <section className="px-6 lg:px-16 py-20 bg-bbpink border-b border-bbespresso/30">
-        <div className="max-w-3xl">
+        <div className="max-w-3xl mb-10">
           <div className="text-xs uppercase tracking-[0.3em] text-bbespresso/80">
             The Lookbook
           </div>
           <h2 className="font-serif text-5xl mt-2">Editorial No. 04</h2>
         </div>
-        <div className="grid grid-cols-12 gap-4 mt-10">
+        <div className="grid grid-cols-12 gap-8 items-start">
           {lookbook.map((p, idx) => {
-            // Give each element unique structural grid weights to keep that custom lookbook shape
-            const layoutClasses = [
-              "col-span-12 md:col-span-5 aspect-[3/4]",
-              "col-span-12 md:col-span-4 md:col-start-7 aspect-[3/4] mt-0 md:mt-16",
-              "col-span-12 md:col-span-6 md:col-start-2 aspect-[4/3]",
-              "col-span-12 md:col-span-4 md:col-start-9 aspect-[3/4] md:-mt-24"
+            // Layout placement coordinates ONLY, removing hard-coded aspect boxes
+            const placementClasses = [
+              "col-span-12 md:col-span-5",
+              "col-span-12 md:col-span-4 md:col-start-8 mt-0 md:mt-24",
+              "col-span-12 md:col-span-6 md:col-start-2 mt-0 md:mt-12",
+              "col-span-12 md:col-span-4 md:col-start-9"
             ];
 
             return (
               <Link 
                 to={`/product/${p.id}`} 
                 key={p.id} 
-                className={`${layoutClasses[idx] || "col-span-6"} img-placeholder text-2xl relative overflow-hidden block group`}
+                className={`${placementClasses[idx] || "col-span-6"} block group`}
               >
-                <span className="absolute inset-0 flex items-center justify-center text-center p-4 z-10 bg-bbespresso/0 group-hover:bg-bbespresso/10 transition-colors duration-300">
+                {/* Natural image container with subtle background fallback */}
+                <div className="bg-bbcream/40 flex items-center justify-center overflow-hidden p-2">
+                  {p.images?.[0] ? (
+                    <img
+                      src={p.images[0]}
+                      alt={p.name}
+                      loading="lazy"
+                      // w-full + h-auto stops warping. max-h stops massive vertical blowouts
+                      className="w-full h-auto max-h-[60vh] object-contain transition-transform duration-500 group-hover:scale-[1.01]"
+                      onError={(e) => { e.currentTarget.style.display = "none"; }}
+                    />
+                  ) : (
+                    <div className="py-20 text-xl text-bbespresso/40">{p.name}</div>
+                  )}
+                </div>
+                <div className="mt-3 text-sm font-serif tracking-wide text-bbespresso text-center md:text-left">
                   {p.name}
-                </span>
-                {p.images?.[0] && (
-                  <img
-                    src={p.images[0]}
-                    alt={p.name}
-                    loading="lazy"
-                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-102"
-                    onError={(e) => { e.currentTarget.style.display = "none"; }}
-                  />
-                )}
+                </div>
               </Link>
             );
           })}
@@ -134,28 +142,32 @@ export default function Home() {
         ))}
       </section>
 
-      {/* GALLERY */}
+      {/* GALLERY — Balanced Flexible Product Matrix */}
       <section className="px-6 lg:px-16 py-20">
         <h2 className="font-serif text-4xl mb-10">The Edit</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 items-end">
           {products.slice(0, 8).map((p) => (
             <Link 
               to={`/product/${p.id}`} 
               key={p.id} 
-              className="aspect-square img-placeholder text-sm relative overflow-hidden block group"
+              className="block group flex flex-col justify-end"
             >
-              <span className="absolute bottom-3 left-3 bg-bbcream text-bbespresso text-[10px] uppercase tracking-widest px-2 py-1 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <div className="bg-bbpink/10 p-3 flex items-center justify-center overflow-hidden">
+                {p.images?.[0] ? (
+                  <img
+                    src={p.images[0]}
+                    alt={p.name}
+                    loading="lazy"
+                    className="w-full h-auto max-h-[40vh] object-contain transition-transform duration-500 group-hover:scale-[1.02]"
+                    onError={(e) => { e.currentTarget.style.display = "none"; }}
+                  />
+                ) : (
+                  <div className="py-12 text-xs text-bbespresso/40">{p.name}</div>
+                )}
+              </div>
+              <div className="mt-2 text-xs uppercase tracking-wider text-bbespresso/80 transition-opacity group-hover:opacity-100">
                 {p.name}
-              </span>
-              {p.images?.[0] && (
-                <img
-                  src={p.images[0]}
-                  alt={p.name}
-                  loading="lazy"
-                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  onError={(e) => { e.currentTarget.style.display = "none"; }}
-                />
-              )}
+              </div>
             </Link>
           ))}
         </div>
